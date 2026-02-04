@@ -1,1 +1,7 @@
-
+{
+    "background": "assets/storm-bg.png",
+    "logo": "assets/bolt-logo.png",
+    "mainTitle": "Starting Soon",
+    "subTitle": "Welcome to the Bolt Dojo",
+    "mainColor": "#00AEEF"
+}
