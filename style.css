@@ -1,1 +1,57 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+    background: black;
+}
 
+#overlay {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+}
+
+#logo {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    animation: pulse 4s infinite ease-in-out;
+}
+
+#mainTitle {
+    position: absolute;
+    top: 65%;
+    width: 100%;
+    text-align: center;
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#subTitle {
+    position: absolute;
+    top: 75%;
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+@keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.08); }
+    100% { transform: translateX(-50%) scale(1); }
+}
