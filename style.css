@@ -1,57 +1,97 @@
+:root {
+    --main-color: #00AEEF;
+    --bg-color: #000;
+    --title-size: clamp(2rem, 4vw, 4rem);
+    --subtitle-size: clamp(1rem, 2.5vw, 2rem);
+    --logo-max-width: 220px;
+}
+
+/* Basic page / font */
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: 'Montserrat', sans-serif;
-    background: black;
+    font-family: 'Montserrat', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--main-color);
 }
 
+/* overlay container */
 #overlay {
     position: relative;
     width: 100vw;
     height: 100vh;
 }
 
+/* Background image */
 #background {
     position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0.85;
+    display: block;
 }
 
+/* Logo centered at top */
 #logo {
     position: absolute;
     top: 5%;
     left: 50%;
     transform: translateX(-50%);
-    width: 220px;
+    width: min(22vw, var(--logo-max-width));
+    max-width: var(--logo-max-width);
+    display: block;
+    pointer-events: none;
     animation: pulse 4s infinite ease-in-out;
 }
 
+/* Main title styles */
 #mainTitle {
     position: absolute;
     top: 65%;
     width: 100%;
     text-align: center;
-    font-size: 4rem;
+    font-size: var(--title-size);
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.65);
+    margin: 0;
+    padding: 0 2rem;
+    box-sizing: border-box;
 }
 
+/* Subtitle styles */
 #subTitle {
     position: absolute;
     top: 75%;
     width: 100%;
     text-align: center;
-    font-size: 2rem;
+    font-size: var(--subtitle-size);
     font-weight: 400;
-    opacity: 0.85;
+    opacity: 0.95;
+    margin: 0;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
+/* Animation */
 @keyframes pulse {
     0% { transform: translateX(-50%) scale(1); }
     50% { transform: translateX(-50%) scale(1.08); }
     100% { transform: translateX(-50%) scale(1); }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #logo { animation: none; }
+}
+
+/* Ensure legible layout on very short viewports (e.g., small mobile heights) */
+@media (max-height: 600px) {
+    #mainTitle { top: 60%; }
+    #subTitle { top: 70%; }
 }

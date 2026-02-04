@@ -3,5 +3,6 @@
     "logo": "assets/bolt-logo.png",
     "mainTitle": "Starting Soon",
     "subTitle": "Welcome to the Bolt Dojo",
-    "mainColor": "#00AEEF"
+    "mainColor": "#00AEEF",
+    "subColor": "#009BD6"
 }
