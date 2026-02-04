@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shaolin Bolt Overlay</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="overlay">
+        <img id="background" />
+        <img id="logo" />
+        <h1 id="mainTitle"></h1>
+        <h2 id="subTitle"></h2>
+    </div>
+
+    <script>
+        fetch("config.json")
+            .then(response => response.json())
+            .then(config => {
+                document.getElementById("background").src = config.background;
+                document.getElementById("logo").src = config.logo;
+                document.getElementById("mainTitle").textContent = config.mainTitle;
+                document.getElementById("subTitle").textContent = config.subTitle;
+
+                document.getElementById("mainTitle").style.color = config.mainColor;
+                document.getElementById("subTitle").style.color = config.mainColor;
+            });
+    </script>
+</body>
+</html>
