@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shaolin Bolt Overlay</title>
-    <!-- Load Montserrat so the overlay renders consistently -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div id="overlay" role="region" aria-label="Stream overlay">
+        <div id="bgAnim" aria-hidden="true"></div>
         <img id="background" alt="Overlay background" />
         <img id="logo" alt="Channel logo" />
         <h1 id="mainTitle" aria-live="polite"></h1>
@@ -24,36 +24,76 @@
             mainTitle: 'Starting Soon',
             subTitle: 'Welcome to the Bolt Dojo',
             mainColor: '#00AEEF',
-            subColor: null
+            subColor: null,
+            preset: 'starting'
         };
+
+        function getQueryParam(name) {
+            try {
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            } catch (e) {
+                const match = window.location.search.match(new RegExp('[?&]' + name + '=([^&]+)'));
+                return match && decodeURIComponent(match[1]);
+            }
+        }
+
+        const configParam = getQueryParam('config');
+        const presetParam = getQueryParam('preset');
+        let configPath = 'config.json';
+        if (configParam) configPath = configParam;
+        else if (presetParam) configPath = presetParam.endsWith('.json') ? presetParam : `${presetParam}.json`;
 
         function applyConfig(config) {
             const cfg = Object.assign({}, defaults, config || {});
+            document.body.classList.remove('starting','brb','ending','justchatting');
+            const presetClass = (cfg.preset || cfg.mainTitle || '').toString().toLowerCase().replace(/\s+/g,'') || 'starting';
+            document.body.classList.add(presetClass);
+
             const backgroundEl = document.getElementById('background');
             const logoEl = document.getElementById('logo');
             const mainTitleEl = document.getElementById('mainTitle');
             const subTitleEl = document.getElementById('subTitle');
 
-            if (cfg.background) backgroundEl.src = cfg.background;
-            if (cfg.logo) logoEl.src = cfg.logo;
+            document.documentElement.style.setProperty('--main-color', cfg.mainColor || defaults.mainColor);
+            document.documentElement.style.setProperty('--sub-color', cfg.subColor || cfg.mainColor || defaults.mainColor);
+
+            if (cfg.background) {
+                backgroundEl.src = cfg.background;
+                backgroundEl.onload = () => { backgroundEl.style.display = 'block'; document.getElementById('bgAnim').classList.add('visible'); };
+                backgroundEl.onerror = () => { backgroundEl.style.display = 'none'; document.getElementById('bgAnim').classList.remove('visible'); };
+            } else {
+                backgroundEl.style.display = 'none';
+                document.getElementById('bgAnim').classList.remove('visible');
+            }
+
+            if (cfg.logo) {
+                logoEl.src = cfg.logo;
+                logoEl.onload = () => { logoEl.classList.add('loaded'); };
+                logoEl.onerror = () => { logoEl.style.display = 'none'; logoEl.classList.remove('loaded'); };
+            } else {
+                logoEl.style.display = 'none';
+                logoEl.classList.remove('loaded');
+            }
 
             mainTitleEl.textContent = cfg.mainTitle || '';
             subTitleEl.textContent = cfg.subTitle || '';
 
-            // Allow separate subtitle color; fall back to mainColor if not provided
-            const subColor = cfg.subColor || cfg.mainColor;
-            mainTitleEl.style.color = cfg.mainColor || defaults.mainColor;
-            subTitleEl.style.color = subColor;
+            [mainTitleEl, subTitleEl].forEach(el => {
+                el.classList.remove('animate');
+                void el.offsetWidth;
+                el.classList.add('animate');
+            });
         }
 
-        fetch('config.json')
+        fetch(configPath)
             .then(response => {
-                if (!response.ok) throw new Error('Failed to fetch config.json: ' + response.status);
+                if (!response.ok) throw new Error('Failed to fetch config: ' + response.status);
                 return response.json();
             })
-            .then(config => applyConfig(config))
+            .then(cfg => applyConfig(cfg))
             .catch(err => {
-                console.warn('Overlay: using defaults due to config load error:', err);
+                console.warn('Overlay: falling back to defaults; config load error:', err);
                 applyConfig(defaults);
             });
     })();
